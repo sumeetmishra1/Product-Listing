@@ -3,28 +3,34 @@ const amount=document.querySelector("#sprice");
 const descrip=document.querySelector("#description");
 const catgory=document.querySelector("#category");
 form.addEventListener('submit',onsubmit);
-function onsubmit(e){
+async function onsubmit(e){
     let myoj={
     amount:amount.value,
     descrip:descrip.value,
     catgory:catgory.value
     };
     e.preventDefault();
-    axios.post('https://crudcrud.com/api/6046168e1a984e8eaaf45e39aae84361/products',myoj)
-    .then((res)=>showonscreen(res.data))
-    .catch(err=>console.log(err));
-    
+    try{
+    let post=await axios.post('https://crudcrud.com/api/1872b3c4f4594b80a851bb7368737e64/products',myoj)
+    showonscreen(post.data)
+    }
+    catch(e){
+        console.log(e)
+    }
     amount.value="";
     descrip.value="";
     catgory.value="";
 };
-function deletefn(userid){
+async function deletefn(userid){
     console.log(userid);
-         axios.delete(`https://crudcrud.com/api/6046168e1a984e8eaaf45e39aae84361/products/${userid}`)
-         .then((res)=> {
-            removeuserfromscreen(userid);
-         })
-         .catch(err=>console.log(err));
+    try{
+        await axios.delete(`https://crudcrud.com/api/1872b3c4f4594b80a851bb7368737e64/products/${userid}`) 
+        removeuserfromscreen(userid)
+    }
+    catch(e){
+        console.log(e);
+    }
+         
 }
 function removeuserfromscreen(userid){
     const childnodedelt=document.getElementById(userid);
@@ -43,12 +49,14 @@ function showonscreen(obj){
     <button onclick=deletefn('${userid}') class="delete btn btn-danger mx-2">Delete</button></li>`;
     lists.innerHTML=lists.innerHTML+childHTML;
 }
-window.addEventListener("DOMContentLoaded",()=>{
-    axios.get("https://crudcrud.com/api/6046168e1a984e8eaaf45e39aae84361/products")
-    .then((res)=>{
-        for(var i=0;i<res.data.length;i++){
-            showonscreen(res.data[i]);
+window.addEventListener("DOMContentLoaded",async()=>{
+    try{
+    let items=await axios.get("https://crudcrud.com/api/1872b3c4f4594b80a851bb7368737e64/products")
+        for(var i=0;i<items.data.length;i++){
+            showonscreen(items.data[i]);
         }
-    } )
-    .catch(err=>console.log(err));
+    } 
+    catch(e){
+        console.log(e)
+    }
 })
